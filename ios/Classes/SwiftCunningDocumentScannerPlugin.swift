@@ -20,7 +20,7 @@ public class SwiftCunningDocumentScannerPlugin: NSObject, FlutterPlugin, VNDocum
             self.resultChannel = result
             self.presentingController = VNDocumentCameraViewController()
             self.presentingController!.delegate = self
-            presentedVC?.present(self.presentingController!, animated: true)
+            presentedVC?.present(self.presentingController!, animated: false)
         } else {
             result(FlutterMethodNotImplemented)
             return
@@ -43,12 +43,12 @@ public class SwiftCunningDocumentScannerPlugin: NSObject, FlutterPlugin, VNDocum
         var filenames: [String] = []
         for i in 0 ... scan.pageCount - 1 {
             let page = scan.imageOfPage(at: i)
-            let url = tempDirPath.appendingPathComponent(formattedDate + "-\(i).png")
-            try? page.pngData()?.write(to: url)
+            let url = tempDirPath.appendingPathComponent(formattedDate + "-\(i).jpg")
+            try? page.jpegData(compressionQuality: CGFloat(75) / CGFloat(100))?.write(to: url)
             filenames.append(url.path)
         }
         resultChannel?(filenames)
-        presentingController?.dismiss(animated: true)
+        presentingController?.dismiss(animated: false)
     }
 
     public func documentCameraViewControllerDidCancel(_ controller: VNDocumentCameraViewController) {
